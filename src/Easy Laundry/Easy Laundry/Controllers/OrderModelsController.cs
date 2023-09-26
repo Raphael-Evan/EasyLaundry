@@ -44,9 +44,29 @@ namespace Easy_Laundry.Controllers
 
             return View(orderModel);
         }
+        public async Task<IActionResult> ConfirmOrder(int id)
+        {
+            TempData["Message"] = "Order confirmed successfully. " +
+                "Thank You For Choosing Us";
 
-        // GET: OrderModels/Create
-        public IActionResult Create()
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            var orderModel = await _context.OrderModel.FindAsync(id);
+            if (orderModel != null)
+            {
+                _context.OrderModel.Remove(orderModel);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Create");
+        }
+
+            // GET: OrderModels/Create
+            public IActionResult Create()
         {
             return View();
         }

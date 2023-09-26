@@ -14,6 +14,15 @@ namespace Easy_Laundry.Data
         {
         }
 
-        public DbSet<Easy_Laundry.Models.OrderModel> OrderModel { get; set; } = default!;
+     public DbSet<Easy_Laundry.Models.OrderModel> OrderModel { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrderModel>()
+                .Property(o => o.Id)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("NEWID()"); 
+        }
+
     }
 }
