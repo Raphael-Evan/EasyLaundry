@@ -1,0 +1,14 @@
+﻿@model Easy_Laundry.Models.OrderModel
+@{
+    ViewData["Title"] = "Track Order";
+}
+
+<h1>Track Order</h1>
+
+<div>
+    <form method="get" asp-action="Details2">
+        <label for="orderId">Enter Order ID:</label><br>
+        <input type="text" id="orderId" name="id" /><br>
+        <input type="submit" value="Track" />
+    </form>
+</div>

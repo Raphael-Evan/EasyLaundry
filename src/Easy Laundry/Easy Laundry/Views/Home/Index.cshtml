@@ -6,24 +6,46 @@
     <h1 class="display-4">Easy Laundry</h1>
     <p>Laundering at your ease</p>
     <br />
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success" id="successMessage">
+            @TempData["Message"]
+        </div>
+
+        <script>
+            setTimeout(function () {
+                var successMessage = document.getElementById("successMessage");
+                if (successMessage) {
+                    successMessage.style.display = "none";
+                }
+            }, 5000);
+        </script>
+    }
+    <br />
     <br />
     <br />
     <br />
     <a asp-action="Create" asp-controller="OrderModels" class="btn-link">
-        <img src="~\Images\launry order.png" alt="Create Order" />
+        <img src="~/Images/launryorder.png" alt="Create Order" style="width: 120px; height: 120px; margin: 10px;" />
+        <p>Place Order</p>
+    </a>
+    
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <a asp-action="Track" asp-controller="OrderModels" class="btn-link">
+        <img src="~/Images/Screenshot 2023-09-26 090146.png" alt="Track Order" style="width: 120px; height: 120px; margin: 10px;" />
+        <p>Track Order</p>
     </a>
     <br />
     <br />
     <br />
     <br />
-    <a asp-action="Index1" asp-controller="OrderModels" class="btn-link">
-        <img src="~\Images\launry order.png" alt="Track Order" />
-    </a>
     <br />
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Message"]
-        </div>
-    }
+    <br />
 </div>

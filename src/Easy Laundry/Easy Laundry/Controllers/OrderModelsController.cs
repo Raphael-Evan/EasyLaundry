@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Easy_Laundry.Data;
+﻿using Easy_Laundry.Data;
 using Easy_Laundry.Models;
+using Easy_Laundry.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Easy_Laundry.Controllers
 {
@@ -19,14 +15,12 @@ namespace Easy_Laundry.Controllers
             _context = context;
         }
 
-        // GET: OrderModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index1()
         {
-              return _context.OrderModel != null ? 
-                          View(await _context.OrderModel.ToListAsync()) :
-                          Problem("Entity set 'Easy_LaundryContext.OrderModel'  is null.");
+            return _context.OrderModel != null ?
+                        View(await _context.OrderModel.ToListAsync()) :
+                        Problem("Entity set 'Easy_LaundryContext.OrderModel'  is null.");
         }
-
         // GET: OrderModels/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -65,8 +59,8 @@ namespace Easy_Laundry.Controllers
             return RedirectToAction("Create");
         }
 
-            // GET: OrderModels/Create
-            public IActionResult Create()
+        // GET: OrderModels/Create
+        public IActionResult Create()
         {
             return View();
         }
@@ -87,59 +81,37 @@ namespace Easy_Laundry.Controllers
             return View(orderModel);
         }
 
-        // GET: OrderModels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.OrderModel == null)
-            {
-                return NotFound();
-            }
-
-            var orderModel = await _context.OrderModel.FindAsync(id);
-            if (orderModel == null)
-            {
-                return NotFound();
-            }
-            return View(orderModel);
-        }
-
         // POST: OrderModels/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ContactNumber,Address,Quantity,ClothType,LaundryType")] OrderModel orderModel)
+
+        // GET: OrderModels/Details2
+        public async Task<IActionResult> Track(int? id)
         {
-            if (id != orderModel.Id)
+            if (id == null)
             {
-                return NotFound();
+                return View();
             }
 
-            if (ModelState.IsValid)
+            OrderModel order = await FetchOrderById(id.Value);
+
+            if (order != null)
             {
-                try
-                {
-                    _context.Update(orderModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderModelExists(orderModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(order);
             }
-            return View(orderModel);
+            else
+            {
+                return View();
+            }
         }
 
-        // GET: OrderModels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        private async Task<OrderModel> FetchOrderById(int id)
+        {
+            var orderModel = await _context.OrderModel.FindAsync(id);
+            return orderModel;
+        }
+
+        public async Task<IActionResult> Details2(int? id)
         {
             if (id == null || _context.OrderModel == null)
             {
@@ -156,28 +128,113 @@ namespace Easy_Laundry.Controllers
             return View(orderModel);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (id == null || _context.OrderModel == null)
+            {
+                return NotFound();
+            }
+
+            var orderModel = await _context.OrderModel.FindAsync(id);
+            if (orderModel == null)
+            {
+                return NotFound();
+            }
+
+            OrderViewModel orderViewModel = new OrderViewModel
+            {
+                Id = orderModel.Id,
+                Status = orderModel.Status,
+                CompletionDate = orderModel.CompletionDate
+            };
+
+            return View(orderViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, OrderViewModel updatedOrderViewModel)
+        {
+            if (id != updatedOrderViewModel.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingOrderModel = await _context.OrderModel.FindAsync(id);
+
+                    if (existingOrderModel == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingOrderModel.Status = updatedOrderViewModel.Status;
+                    existingOrderModel.CompletionDate = updatedOrderViewModel.CompletionDate;
+
+                    _context.Update(existingOrderModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OrderModelExists(updatedOrderViewModel.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index1));
+            }
+            return View(updatedOrderViewModel);
+        }
+
+        // GET: OrderModels/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var orderModel = await _context.OrderModel
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (orderModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(orderModel);
+        }
+
         // POST: OrderModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.OrderModel == null)
-            {
-                return Problem("Entity set 'Easy_LaundryContext.OrderModel'  is null.");
-            }
             var orderModel = await _context.OrderModel.FindAsync(id);
-            if (orderModel != null)
+
+            if (orderModel == null)
             {
-                _context.OrderModel.Remove(orderModel);
+                return NotFound();
             }
-            
+
+            _context.OrderModel.Remove(orderModel);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index1));
         }
+
 
         private bool OrderModelExists(int id)
         {
-          return (_context.OrderModel?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.OrderModel?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
+

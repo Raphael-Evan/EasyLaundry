@@ -1,15 +1,13 @@
 ﻿@model Easy_Laundry.Models.OrderModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Details2";
 }
 
-<h1>Remove Order</h1>
-<br />
+<h1>Order Details</h1>
+
 <div>
-    <br />
     <hr />
-    <br />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -47,26 +45,20 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LaundryType)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Status)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Status)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CompletionDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CompletionDate)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> 
-        <br />
-        <br />
-        <br />
-        <a asp-action="Index">Cancel</a>
-    </form>
+</div>
+<div>
+    <a asp-controller="Home" asp-action="Index">Back</a>
 </div>

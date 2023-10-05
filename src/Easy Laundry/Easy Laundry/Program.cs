@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Easy_Laundry.Data;
+﻿using Easy_Laundry.Data;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Easy_LaundryContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Easy_LaundryContext") ?? throw new InvalidOperationException("Connection string 'Easy_LaundryContext' not found.")));
