@@ -49,14 +49,17 @@
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <br />
-            <div class="form-group">
-                <label asp-for="CompletionDate" class="control-label"></label>
+            <div>
+            @if (Model.Status == "Completed")
+            {
+                <input asp-for="CompletionDate" id="CompletionDate" class="form-control" disabled />
+                <input type="hidden" asp-for="CompletionDate" />
+            }
+            else
+            {
                 <input asp-for="CompletionDate" id="CompletionDate" class="form-control" />
-                @if (Model.Status =="Completed" )
-                {
-                    <input asp-for="CompletionDate" id="CompletionDate" class="form-control" disabled/>
-                }
-                <span asp-validation-for="CompletionDate" class="text-danger"></span>
+            }
+            <span asp-validation-for="CompletionDate" class="text-danger"></span>
             </div>
             <br />
             <br />
